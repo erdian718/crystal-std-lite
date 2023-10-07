@@ -5,8 +5,7 @@ struct Number
   include Steppable
 
   # :nodoc:
-  #
-  # In this library, `Number` is always primitive, and this alias is reserved only for compatibility.
+  @[Deprecated("Use `Number` instead")]
   alias Primitive = Int::Primitive | Float::Primitive
 
   macro inherited
@@ -33,11 +32,14 @@ struct Number
     self < 0
   end
 
-  # Returns the sign of this number as an `Int32`.
+  # Returns the sign of this number as an `Int`.
   # * `1` if this number is positive.
   # * `-1` if this number is negative.
   # * `0` if this number is zero or nan.
-  def sign : Int32
+  #
+  # NOTE: The return value type is the default integer type,
+  # depending on the platform and compiler version.
+  def sign : Int
     self > 0 ? 1 : (self < 0 ? -1 : 0)
   end
 
@@ -51,25 +53,30 @@ struct Number
     self * self
   end
 
-  # Returns a `Tuple` of two elements containing the quotient and modulus obtained by dividing `self` by *other*.
-  def divmod(other)
-    {self // other, self % other}
-  end
-
   # Returns `self`.
   def + : self
     self
   end
 
+  # Divides `self` by *other*.
+  def /(other : Number) : Float
+    self.to_f / other.to_f
+  end
+
   # Divides `self` by *other* using floored division.
   #
   # The result will be of the same type as `self`.
-  def //(other)
+  def //(other : Number) : self
     self.class.new((self / other).floor)
   end
 
+  # Returns a `Tuple` of two elements containing the quotient and modulus obtained by dividing `self` by *other*.
+  def divmod(other : Number)
+    {self // other, self % other}
+  end
+
   # The comparison operator.
-  def <=>(other) : Int32?
+  def <=>(other : self)
     return 0 if self == other
     return 1 if self > other
     return -1 if self < other
