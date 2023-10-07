@@ -80,7 +80,7 @@ struct Symbol
 
   # Returns a unique number for this symbol.
   @[Primitive(:convert)]
-  def to_i : Int32
+  def ord : Int32
   end
 
   # Returns the symbol's name as a String.
