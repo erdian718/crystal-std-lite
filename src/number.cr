@@ -47,7 +47,7 @@ struct Number
   end
 
   # Returns the square of `self`.
-  def abs2
+  def abs2 : self
     self * self
   end
 
