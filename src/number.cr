@@ -76,6 +76,55 @@ struct Number
     nil
   end
 
+  # Returns self converted to Int.
+  # Raises OverflowError in case of overflow.
+  #
+  # NOTE: The return value type is the default integer type,
+  # depending on the platform and compiler version.
+  def to_i : Int
+    to_i32
+  end
+
+  # Returns self converted to unsigned Int.
+  #
+  # NOTE: The return value type is the default unsigned integer type,
+  # depending on the platform and compiler version.
+  def to_u : Int
+    to_u32
+  end
+
+  # Returns self converted to Float.
+  #
+  # NOTE: The return value type is the default float type,
+  # depending on the platform and compiler version.
+  def to_f : Float
+    to_f64
+  end
+
+  # Returns self converted to Int.
+  #
+  # NOTE: The return value type is the default integer type,
+  # depending on the platform and compiler version.
+  def to_i! : Int
+    to_i32!
+  end
+
+  # Returns self converted to unsigned Int.
+  #
+  # NOTE: The return value type is the default unsigned integer type,
+  # depending on the platform and compiler version.
+  def to_u! : Int
+    to_u32!
+  end
+
+  # Returns self converted to Float.
+  #
+  # NOTE: The return value type is the default float type,
+  # depending on the platform and compiler version.
+  def to_f! : Float
+    to_f64!
+  end
+
   # :nodoc:
   macro expand_div(rhs_types, result_type)
     {% for rhs in rhs_types %}

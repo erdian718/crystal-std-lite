@@ -171,7 +171,6 @@ end
   {% for number in numbers %}
     struct {{number.id}}
       {% for name, type in {
-                             to_i: Int32, to_u: UInt32, to_f: Float64,
                              to_i8: Int8, to_i16: Int16, to_i32: Int32, to_i64: Int64, to_i128: Int128,
                              to_u8: UInt8, to_u16: UInt16, to_u32: UInt32, to_u64: UInt64, to_u128: UInt128,
                              to_f32: Float32, to_f64: Float64,
