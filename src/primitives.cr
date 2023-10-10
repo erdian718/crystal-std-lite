@@ -78,9 +78,13 @@ struct Symbol
   def !=(other : Symbol) : Bool
   end
 
+  # :nodoc:
+  #
   # Returns a unique number for this symbol.
+  #
+  # TODO: Perhaps naming it `ord` would be more appropriate.
   @[Primitive(:convert)]
-  def ord : Int32
+  def to_i : Int32
   end
 
   # Returns the symbol's name as a String.
@@ -99,14 +103,14 @@ struct Pointer(T)
   #
   # To override this implicit behaviour, `GC.malloc` and `GC.malloc_atomic` can be used directly instead.
   @[Primitive(:pointer_malloc)]
-  def self.malloc(size : UInt64)
+  def self.malloc(size : UInt64) : self
   end
 
   # Returns a pointer that points to the given memory address.
   #
   # This doesn't allocate memory.
   @[Primitive(:pointer_new)]
-  def self.new(address : UInt64)
+  def self.new(address : UInt64) : self
   end
 
   # Gets the value pointed by this pointer.
@@ -294,11 +298,6 @@ end
           def {{op.id}}(other : {{number.id}}) : self
           end
         {% end %}
-
-        # Returns the float division of `self` and *other*.
-        @[::Primitive(:binary)]
-        def fdiv(other : {{number.id}}) : self
-        end
       {% end %}
 
       # Returns the result of division `self` and *other*.

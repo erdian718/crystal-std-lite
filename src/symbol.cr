@@ -18,12 +18,6 @@ struct Symbol
     to_s <=> other.to_s
   end
 
-  # :nodoc:
-  @[Deprecated("Use `#ord` instead")]
-  def to_i : Int
-    ord
-  end
-
   # Appends the symbol's name to the passed `IO`.
   def to_s(io : IO) : Nil
     io << to_s

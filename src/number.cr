@@ -5,7 +5,8 @@ struct Number
   include Steppable
 
   # :nodoc:
-  @[Deprecated("Use `Number` instead")]
+  #
+  # TODO: Just for compatibility with the official standard library.
   alias Primitive = Int::Primitive | Float::Primitive
 
   macro inherited
