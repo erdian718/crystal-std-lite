@@ -204,35 +204,60 @@ end
       end
 
       {% for op in %w(+ - *) %}
-        # :nodoc:
-        @[::Primitive(:binary)]
-        @[Raises]
-        def {{op.id}}(other : self) : self
-        end
+        {% for int2 in ints %}
+          # :nodoc:
+          @[::Primitive(:binary)]
+          @[Raises]
+          def {{op.id}}(other : {{int2.id}}) : self
+          end
 
+          # :nodoc:
+          @[::Primitive(:binary)]
+          def &{{op.id}}(other : {{int2.id}}) : self
+          end
+        {% end %}
+
+        {% for float in floats %}
+          # :nodoc:
+          @[::Primitive(:binary)]
+          def {{op.id}}(other : {{float.id}}) : {{float.id}}
+          end
+        {% end %}
+      {% end %}
+
+      {% for float in floats %}
         # :nodoc:
         @[::Primitive(:binary)]
-        def &{{op.id}}(other : self) : self
+        def /(other : {{float.id}}) : {{float.id}}
         end
       {% end %}
 
       {% for op in %w(| & ^ unsafe_shl unsafe_shr unsafe_div unsafe_mod) %}
-        # :nodoc:
-        @[::Primitive(:binary)]
-        def {{op.id}}(other : self) : self
-        end
+        {% for int2 in ints %}
+          # :nodoc:
+          @[::Primitive(:binary)]
+          def {{op.id}}(other : {{int2.id}}) : self
+          end
+        {% end %}
       {% end %}
     end
   {% end %}
 
   {% for float in floats %}
     struct {{float.id}}
-      {% for op in %w(+ - * /) %}
-        # :nodoc:
-        @[::Primitive(:binary)]
-        def {{op.id}}(other : self) : self
-        end
+      {% for op in %w(+ - *) %}
+        {% for number in numbers %}
+          # :nodoc:
+          @[::Primitive(:binary)]
+          def {{op.id}}(other : {{number.id}}) : self
+          end
+        {% end %}
       {% end %}
+
+      # :nodoc:
+      @[::Primitive(:binary)]
+      def /(other : self) : self
+      end
     end
   {% end %}
 {% end %}

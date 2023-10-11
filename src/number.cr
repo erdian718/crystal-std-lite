@@ -9,6 +9,7 @@ struct Number
   # TODO: Just for compatibility with the official standard library.
   alias Primitive = Int::Primitive | Float::Primitive
 
+  # :nodoc:
   macro inherited
     {{ raise "Cannot inherit from Number" }}
   end

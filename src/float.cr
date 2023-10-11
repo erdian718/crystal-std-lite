@@ -8,6 +8,7 @@ struct Float
   # TODO: Just for compatibility with the official standard library.
   alias Primitive = Float32 | Float64
 
+  # :nodoc:
   macro inherited
     {{ raise "Cannot inherit from Float" }}
   end
@@ -182,9 +183,17 @@ end
 
     # Prints the number to *io*.
     def to_s(io : IO) : Nil
-      buffer = uninitialized UInt8[32]
-      n = LibC.snprintf(buffer.to_unsafe, buffer.size, "%g")
-      io.write(buffer.to_slice[0, n])
+      if nan?
+        io << "NaN"
+      elsif self > MAX
+        io << "Infinity"
+      elsif self < MIN
+        io << "-Infinity"
+      else
+        buffer = uninitialized UInt8[32]
+        n = LibC.snprintf(buffer.to_unsafe, buffer.size, "%.16g", self)
+        io.write(buffer.to_slice[0, n])
+      end
     end
   end
 {% end %}
