@@ -76,6 +76,9 @@ struct Number
     self.class.new((self / other).floor)
   end
 
+  # Returns the integer modulo.
+  #
+  # Same as `self - (self // other) * other`.
   def %(other : Number) : self
     self - (self // other) * other
   end
@@ -86,6 +89,9 @@ struct Number
     self.class.new((self / other).trunc)
   end
 
+  # Returns the integer remainder.
+  #
+  # Same as `self - tdiv(other) * other`.
   def remainder(other : Number) : self
     self - tdiv(other) * other
   end
