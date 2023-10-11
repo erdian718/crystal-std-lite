@@ -65,9 +65,16 @@ struct Number
   end
 
   # Divides `self` by *other*.
+  #
+  # NOTE: The return value type depending on the platform and compiler version.
   @[AlwaysInline]
   def /(other : Number) : Number
     self.to_f / other.to_f
+  end
+
+  # Returns the base-`self` exponential of *other*.
+  def **(other : Number) : self
+    self ** self.class.new(other)
   end
 
   # Divides `self` by *other* using floored division.
@@ -102,6 +109,8 @@ struct Number
   end
 
   # The comparison operator.
+  #
+  # NOTE: The return value type depending on the platform and compiler version.
   def <=>(other : self)
     return 0 if self == other
     return 1 if self > other
