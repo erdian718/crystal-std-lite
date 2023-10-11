@@ -14,21 +14,25 @@ struct Number
   end
 
   # Returns the value zero in the respective type.
+  @[AlwaysInline]
   def self.zero : self
     new(0)
   end
 
   # Returns `true` if `self` is equal to zero.
+  @[AlwaysInline]
   def zero? : Bool
     self == 0
   end
 
   # Returns `true` if `self` is greater than zero.
+  @[AlwaysInline]
   def positive? : Bool
     self > 0
   end
 
   # Returns `true` if `self` is less than zero.
+  @[AlwaysInline]
   def negative? : Bool
     self < 0
   end
@@ -55,20 +59,35 @@ struct Number
   end
 
   # Returns `self`.
+  @[AlwaysInline]
   def + : self
     self
   end
 
   # Divides `self` by *other*.
-  def /(other : Number) : Float
+  @[AlwaysInline]
+  def /(other : Number) : Number
     self.to_f / other.to_f
   end
 
   # Divides `self` by *other* using floored division.
-  #
-  # The result will be of the same type as `self`.
   def //(other : Number) : self
+    raise DivisionByZeroError.new if other == 0
     self.class.new((self / other).floor)
+  end
+
+  def %(other : Number) : self
+    self - (self // other) * other
+  end
+
+  # Divides `self` by *other* using truncated division.
+  def tdiv(other : Number) : self
+    raise DivisionByZeroError.new if other == 0
+    self.class.new((self / other).trunc)
+  end
+
+  def remainder(other : Number) : self
+    self - tdiv(other) * other
   end
 
   # Returns a `Tuple` of two elements containing the quotient and modulus obtained by dividing `self` by *other*.
@@ -84,63 +103,40 @@ struct Number
     nil
   end
 
-  # Returns self converted to Int.
-  # Raises OverflowError in case of overflow.
+  # Convert `self` to `Int` with overflow checking.
   #
   # NOTE: The return value type is the default integer type,
   # depending on the platform and compiler version.
+  @[AlwaysInline]
   def to_i : Int
     to_i32
   end
 
-  # Returns self converted to unsigned Int.
-  #
-  # NOTE: The return value type is the default unsigned integer type,
-  # depending on the platform and compiler version.
-  def to_u : Int
-    to_u32
-  end
-
-  # Returns self converted to Float.
+  # Convert `self` to `Float` with overflow checking.
   #
   # NOTE: The return value type is the default float type,
   # depending on the platform and compiler version.
+  @[AlwaysInline]
   def to_f : Float
     to_f64
   end
 
-  # Returns self converted to Int.
+  # Convert `self` to `Int` without overflow checking.
   #
   # NOTE: The return value type is the default integer type,
   # depending on the platform and compiler version.
+  @[AlwaysInline]
   def to_i! : Int
     to_i32!
   end
 
-  # Returns self converted to unsigned Int.
-  #
-  # NOTE: The return value type is the default unsigned integer type,
-  # depending on the platform and compiler version.
-  def to_u! : Int
-    to_u32!
-  end
-
-  # Returns self converted to Float.
+  # Convert `self` to `Float` without overflow checking.
   #
   # NOTE: The return value type is the default float type,
   # depending on the platform and compiler version.
+  @[AlwaysInline]
   def to_f! : Float
     to_f64!
-  end
-
-  # :nodoc:
-  macro expand_div(rhs_types, result_type)
-    {% for rhs in rhs_types %}
-      @[AlwaysInline]
-      def /(other : {{rhs}}) : {{result_type}}
-        {{result_type}}.new(self) / {{result_type}}.new(other)
-      end
-    {% end %}
   end
 
   # Creates an `Array` of `self` with the given values,

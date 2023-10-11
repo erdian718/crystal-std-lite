@@ -52,15 +52,8 @@ struct Char
   def ord : Int32
   end
 
-  {% for op, desc in {
-                       "==" => "equal to",
-                       "!=" => "not equal to",
-                       "<"  => "less than",
-                       "<=" => "less than or equal to",
-                       ">"  => "greater than",
-                       ">=" => "greater than or equal to",
-                     } %}
-    # Returns `true` if `self`'s codepoint is {{desc.id}} *other*'s codepoint.
+  {% for op in %w(== != < <= > >=) %}
+    # :nodoc:
     @[Primitive(:binary)]
     def {{op.id}}(other : Char) : Bool
     end
@@ -81,7 +74,6 @@ struct Symbol
   # :nodoc:
   #
   # Returns a unique number for this symbol.
-  #
   # TODO: Perhaps naming it `ord` would be more appropriate.
   @[Primitive(:convert)]
   def to_i : Int32
@@ -170,7 +162,6 @@ end
   {% ints = %w(Int8 Int16 Int32 Int64 Int128 UInt8 UInt16 UInt32 UInt64 UInt128) %}
   {% floats = %w(Float32 Float64) %}
   {% numbers = %w(Int8 Int16 Int32 Int64 Int128 UInt8 UInt16 UInt32 UInt64 UInt128 Float32 Float64) %}
-  {% binaries = {"+" => "adding", "-" => "subtracting", "*" => "multiplying"} %}
 
   {% for number in numbers %}
     struct {{number.id}}
@@ -179,35 +170,21 @@ end
                              to_u8: UInt8, to_u16: UInt16, to_u32: UInt32, to_u64: UInt64, to_u128: UInt128,
                              to_f32: Float32, to_f64: Float64,
                            } %}
-        # Returns `self` converted to `{{type}}`.
-        # Raises `OverflowError` in case of overflow.
+        # Convert `self` to `{{type}}` with overflow checking.
         @[::Primitive(:convert)]
         @[Raises]
         def {{name.id}} : {{type}}
         end
 
-        # Returns `self` converted to `{{type}}`.
-        # In case of overflow
-        # {% if ints.includes?(number) %} a wrapping is performed.
-        # {% elsif type < Int %} the result is undefined.
-        # {% else %} infinity is returned.
-        # {% end %}
+        # Convert `self` to `{{type}}` without overflow checking.
         @[::Primitive(:unchecked_convert)]
         def {{name.id}}! : {{type}}
         end
       {% end %}
 
       {% for number2 in numbers %}
-        {% for op, desc in {
-                             "==" => "equal to",
-                             "!=" => "not equal to",
-                             "<"  => "less than",
-                             "<=" => "less than or equal to",
-                             ">"  => "greater than",
-                             ">=" => "greater than or equal to",
-                           } %}
-          # Returns `true` if `self` is {{desc.id}} *other*{% if op == "!=" && (!ints.includes?(number) || !ints.includes?(number2)) %}
-          # or if `self` and *other* are unordered{% end %}.
+        {% for op in %w(== != < <= > >=) %}
+          # :nodoc:
           @[::Primitive(:binary)]
           def {{op.id}}(other : {{number2.id}}) : Bool
           end
@@ -226,84 +203,36 @@ end
       def unsafe_chr : Char
       end
 
-      {% for int2 in ints %}
-        {% for op, desc in binaries %}
-          # Returns the result of {{desc.id}} `self` and *other*.
-          # Raises `OverflowError` in case of overflow.
-          @[::Primitive(:binary)]
-          @[Raises]
-          def {{op.id}}(other : {{int2.id}}) : self
-          end
-
-          # Returns the result of {{desc.id}} `self` and *other*.
-          # In case of overflow a wrapping is performed.
-          @[::Primitive(:binary)]
-          def &{{op.id}}(other : {{int2.id}}) : self
-          end
-        {% end %}
-
-        # Returns the result of performing a bitwise OR of `self`'s and *other*'s bits.
+      {% for op in %w(+ - *) %}
+        # :nodoc:
         @[::Primitive(:binary)]
-        def |(other : {{int2.id}}) : self
-        end
-
-        # Returns the result of performing a bitwise AND of `self`'s and *other*'s bits.
-        @[::Primitive(:binary)]
-        def &(other : {{int2.id}}) : self
-        end
-
-        # Returns the result of performing a bitwise XOR of `self`'s and *other*'s bits.
-        @[::Primitive(:binary)]
-        def ^(other : {{int2.id}}) : self
+        @[Raises]
+        def {{op.id}}(other : self) : self
         end
 
         # :nodoc:
         @[::Primitive(:binary)]
-        def unsafe_shl(other : {{int2.id}}) : self
-        end
-
-        # :nodoc:
-        @[::Primitive(:binary)]
-        def unsafe_shr(other : {{int2.id}}) : self
-        end
-
-        # :nodoc:
-        @[::Primitive(:binary)]
-        def unsafe_div(other : {{int2.id}}) : self
-        end
-
-        # :nodoc:
-        @[::Primitive(:binary)]
-        def unsafe_mod(other : {{int2.id}}) : self
+        def &{{op.id}}(other : self) : self
         end
       {% end %}
 
-      {% for float in floats %}
-        {% for op, desc in binaries %}
-          # Returns the result of {{desc.id}} `self` and *other*.
-          @[::Primitive(:binary)]
-          def {{op.id}}(other : {{float.id}}) : {{float.id}}
-          end
-        {% end %}
+      {% for op in %w(| & ^ unsafe_shl unsafe_shr unsafe_div unsafe_mod) %}
+        # :nodoc:
+        @[::Primitive(:binary)]
+        def {{op.id}}(other : self) : self
+        end
       {% end %}
     end
   {% end %}
 
   {% for float in floats %}
     struct {{float.id}}
-      {% for number in numbers %}
-        {% for op, desc in binaries %}
-          # Returns the result of {{desc.id}} `self` and *other*.
-          @[::Primitive(:binary)]
-          def {{op.id}}(other : {{number.id}}) : self
-          end
-        {% end %}
+      {% for op in %w(+ - * /) %}
+        # :nodoc:
+        @[::Primitive(:binary)]
+        def {{op.id}}(other : self) : self
+        end
       {% end %}
-
-      # Returns the result of division `self` and *other*.
-      @[::Primitive(:binary)]
-      def /(other : {{float.id}}) : {{float.id}}
-      end
     end
   {% end %}
 {% end %}
