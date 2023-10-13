@@ -155,6 +155,10 @@ struct Number
     to_f64!
   end
 
+  def clone : self
+    self
+  end
+
   # Creates an `Array` of `self` with the given values,
   # which will be casted to this type with the `new` method.
   macro [](*numbers)
