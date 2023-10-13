@@ -23,6 +23,21 @@ struct Int
     raise ArgumentError.new("0x#{self.to_s(16)} out of char range")
   end
 
+  # Reports whether `self` is a not-a-number value.
+  def nan? : Bool
+    false
+  end
+
+  # Reports whether `self` is a finite value.
+  def finite? : Bool
+    true
+  end
+
+  # Reports whether `self` is an infinite value.
+  def infinite?
+    nil
+  end
+
   def ===(char : Char)
     self === char.ord
   end

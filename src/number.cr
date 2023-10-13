@@ -34,6 +34,27 @@ struct Number
     self < 0
   end
 
+  # Reports whether `self` is a not-a-number value.
+  def nan? : Bool
+    !(self == self)
+  end
+
+  # Reports whether `self` is a finite value.
+  def finite? : Bool
+    {% begin %}
+      {{@type}}::MIN <= self <= {{@type}}::MAX
+    {% end %}
+  end
+
+  # Reports whether `self` is an infinite value.
+  def infinite?
+    {% begin %}
+      return 1 if self > {{@type}}::MAX
+      return -1 if self < {{@type}}::MIN
+    {% end %}
+    nil
+  end
+
   # Returns the sign of this number as an `Int`.
   # * `1` if this number is positive.
   # * `-1` if this number is negative.

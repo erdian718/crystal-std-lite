@@ -13,11 +13,6 @@ struct Float
     {{ raise "Cannot inherit from Float" }}
   end
 
-  # Reports whether `self` is a not-a-number value.
-  def nan? : Bool
-    !(self == self)
-  end
-
   # Returns the opposite number of `self`.
   def - : self
     self.class.zero - self
@@ -118,18 +113,6 @@ end
     # Returns a `Float{{bits}}` by invoking `String#to_f{{bits}}` on *value*.
     def self.new(value : String, whitespace : Bool = true, strict : Bool = true) : self
       value.to_f{{bits}}(whitespace: whitespace, strict: strict)
-    end
-
-    # Reports whether `self` is an infinite value.
-    def infinite? : Int32?
-      return 1 if self > MAX
-      return -1 if self < MIN
-      nil
-    end
-
-    # Reports whether `self` is a finite value.
-    def finite? : Bool
-      MIN < self < MAX
     end
 
     # :nodoc:
