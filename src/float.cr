@@ -19,14 +19,12 @@ struct Float
   end
 
   # Returns the opposite number of `self`.
-  @[AlwaysInline]
   def - : self
     self.class.zero - self
   end
 
   {% for op in %w(+ - *) %}
     # Performs `{{op.id}}` operation.
-    @[AlwaysInline]
     def {{op.id}}(other : Number) : self
       self {{op.id}} self.class.new(other)
     end
@@ -108,19 +106,16 @@ end
     INFINITY = (1_f{{bits}} / 0_f{{bits}}).as(Float{{bits}})
 
     # Returns a `Float{{bits}}` by invoking `to_f{{bits}}` on *value*.
-    @[AlwaysInline]
     def self.new(value) : self
       value.to_f{{bits}}
     end
 
     # Returns a `Float{{bits}}` by invoking `to_f{{bits}}!` on *value*.
-    @[AlwaysInline]
     def self.new!(value) : self
       value.to_f{{bits}}!
     end
 
     # Returns a `Float{{bits}}` by invoking `String#to_f{{bits}}` on *value*.
-    @[AlwaysInline]
     def self.new(value : String, whitespace : Bool = true, strict : Bool = true) : self
       value.to_f{{bits}}(whitespace: whitespace, strict: strict)
     end

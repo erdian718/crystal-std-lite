@@ -15,25 +15,21 @@ struct Number
   end
 
   # Returns the value zero in the respective type.
-  @[AlwaysInline]
   def self.zero : self
     new(0)
   end
 
   # Returns `true` if `self` is equal to zero.
-  @[AlwaysInline]
   def zero? : Bool
     self == 0
   end
 
   # Returns `true` if `self` is greater than zero.
-  @[AlwaysInline]
   def positive? : Bool
     self > 0
   end
 
   # Returns `true` if `self` is less than zero.
-  @[AlwaysInline]
   def negative? : Bool
     self < 0
   end
@@ -60,7 +56,6 @@ struct Number
   end
 
   # Returns `self`.
-  @[AlwaysInline]
   def + : self
     self
   end
@@ -68,7 +63,6 @@ struct Number
   # Divides `self` by *other*.
   #
   # NOTE: The return value type depending on the platform and compiler version.
-  @[AlwaysInline]
   def /(other : Number) : Number
     self.to_f / other.to_f
   end
@@ -123,7 +117,6 @@ struct Number
   #
   # NOTE: The return value type is the default integer type,
   # depending on the platform and compiler version.
-  @[AlwaysInline]
   def to_i : Int
     to_i32
   end
@@ -132,7 +125,6 @@ struct Number
   #
   # NOTE: The return value type is the default float type,
   # depending on the platform and compiler version.
-  @[AlwaysInline]
   def to_f : Float
     to_f64
   end
@@ -141,7 +133,6 @@ struct Number
   #
   # NOTE: The return value type is the default integer type,
   # depending on the platform and compiler version.
-  @[AlwaysInline]
   def to_i! : Int
     to_i32!
   end
@@ -150,7 +141,6 @@ struct Number
   #
   # NOTE: The return value type is the default float type,
   # depending on the platform and compiler version.
-  @[AlwaysInline]
   def to_f! : Float
     to_f64!
   end
